@@ -1,0 +1,102 @@
+# =============================================================================
+# Hermes Agent — Two-Agent Deployment
+# Agents: Warren (CFO) + Stacks (Personal Assistant)
+# Host:   Hostinger VPS / Ubuntu 24.04
+# Usage:  docker compose up -d
+# Logs:   docker compose logs -f warren
+#         docker compose logs -f stacks
+# Update: docker compose pull && docker compose up -d
+# =============================================================================
+
+services:
+
+  # ---------------------------------------------------------------------------
+  # WARREN — Chief Financial Investment Officer
+  # ---------------------------------------------------------------------------
+  warren:
+    image: nousresearch/hermes-agent:latest
+    container_name: warren
+    restart: unless-stopped
+    command: gateway run
+    hostname: warren
+
+    volumes:
+      - /home/hermes/hermes/warren:/opt/data
+
+    env_file:
+      - /home/hermes/hermes/warren/.env
+
+    # Warren runs financial research — enable shared memory for browser tools
+    shm_size: "1gb"
+
+    deploy:
+      resources:
+        limits:
+          memory: 3G
+          cpus: "1.5"
+        reservations:
+          memory: 512M
+          cpus: "0.25"
+
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "3"
+
+    healthcheck:
+      test: ["CMD", "hermes", "doctor", "--quiet"]
+      interval: 60s
+      timeout: 15s
+      retries: 3
+      start_period: 30s
+
+    networks:
+      - hermes-net
+
+  # ---------------------------------------------------------------------------
+  # STACKS — Personal Assistant
+  # ---------------------------------------------------------------------------
+  stacks:
+    image: nousresearch/hermes-agent:latest
+    container_name: stacks
+    restart: unless-stopped
+    command: gateway run
+    hostname: stacks
+
+    volumes:
+      - /home/hermes/hermes/stacks:/opt/data
+
+    env_file:
+      - /home/hermes/hermes/stacks/.env
+
+    shm_size: "512mb"
+
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: "1.0"
+        reservations:
+          memory: 256M
+          cpus: "0.25"
+
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "3"
+
+    healthcheck:
+      test: ["CMD", "hermes", "doctor", "--quiet"]
+      interval: 60s
+      timeout: 15s
+      retries: 3
+      start_period: 30s
+
+    networks:
+      - hermes-net
+
+networks:
+  hermes-net:
+    driver: bridge
