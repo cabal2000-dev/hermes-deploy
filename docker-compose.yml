@@ -100,3 +100,50 @@ services:
 networks:
   hermes-net:
     driver: bridge
+
+  #---------------------------------------------------------------------------
+  # Medicus — Meedical / Health Agent
+  # ---------------------------------------------------------------------------
+  medicus:
+    image: nousresearch/hermes-agent:latest
+    container_name: medicus
+    restart: unless-stopped
+    command: gateway run
+    hostname: stacks
+
+    volumes:
+      - /home/hermes/hermes/medicus:/opt/data
+
+    env_file:
+      - /home/hermes/hermes/medicus/.env
+
+    shm_size: "512mb"
+
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: "1.0"
+        reservations:
+          memory: 256M
+          cpus: "0.25"
+
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "3"
+
+    healthcheck:
+      test: ["CMD", "hermes", "doctor", "--quiet"]
+      interval: 60s
+      timeout: 15s
+      retries: 3
+      start_period: 30s
+
+    networks:
+      - hermes-net
+
+networks:
+  hermes-net:
+    driver: bridge
