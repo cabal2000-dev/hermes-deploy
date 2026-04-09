@@ -1,10 +1,11 @@
 # =============================================================================
-# Hermes Agent — Two-Agent Deployment
-# Agents: Warren (CFO) + Stacks (Personal Assistant)
+# Hermes Agent — Three-Agent Deployment
+# Agents: Warren (CFO) + Stacks (Personal Assistant) + Medicus (Medical Agent)
 # Host:   Hostinger VPS / Ubuntu 24.04
 # Usage:  docker compose up -d
 # Logs:   docker compose logs -f warren
 #         docker compose logs -f stacks
+#         docker compose logs -f medicus
 # Update: docker compose pull && docker compose up -d
 # =============================================================================
 
