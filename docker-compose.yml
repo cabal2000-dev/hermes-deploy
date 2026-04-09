@@ -11,9 +11,6 @@
 
 services:
 
-  # ---------------------------------------------------------------------------
-  # WARREN — Chief Financial Investment Officer
-  # ---------------------------------------------------------------------------
   warren:
     image: nousresearch/hermes-agent:latest
     container_name: warren
@@ -27,17 +24,10 @@ services:
     env_file:
       - /home/hermes/hermes/warren/.env
 
-    # Warren runs financial research — enable shared memory for browser tools
     shm_size: "1gb"
-
-    deploy:
-      resources:
-        limits:
-          memory: 3G
-          cpus: "1.5"
-        reservations:
-          memory: 512M
-          cpus: "0.25"
+    cpus: "1.0"
+    mem_limit: "2500m"
+    mem_reservation: "512m"
 
     logging:
       driver: "json-file"
@@ -55,9 +45,6 @@ services:
     networks:
       - hermes-net
 
-  # ---------------------------------------------------------------------------
-  # STACKS — Personal Assistant
-  # ---------------------------------------------------------------------------
   stacks:
     image: nousresearch/hermes-agent:latest
     container_name: stacks
@@ -72,15 +59,9 @@ services:
       - /home/hermes/hermes/stacks/.env
 
     shm_size: "512mb"
-
-    deploy:
-      resources:
-        limits:
-          memory: 2G
-          cpus: "1.0"
-        reservations:
-          memory: 256M
-          cpus: "0.25"
+    cpus: "0.6"
+    mem_limit: "1750m"
+    mem_reservation: "256m"
 
     logging:
       driver: "json-file"
@@ -98,19 +79,12 @@ services:
     networks:
       - hermes-net
 
-networks:
-  hermes-net:
-    driver: bridge
-
-  #---------------------------------------------------------------------------
-  # Medicus — Meedical / Health Agent
-  # ---------------------------------------------------------------------------
   medicus:
     image: nousresearch/hermes-agent:latest
     container_name: medicus
     restart: unless-stopped
     command: gateway run
-    hostname: stacks
+    hostname: medicus
 
     volumes:
       - /home/hermes/hermes/medicus:/opt/data
@@ -118,16 +92,10 @@ networks:
     env_file:
       - /home/hermes/hermes/medicus/.env
 
-    shm_size: "512mb"
-
-    deploy:
-      resources:
-        limits:
-          memory: 2G
-          cpus: "1.0"
-        reservations:
-          memory: 512M
-          cpus: "0.25"
+    shm_size: "1gb"
+    cpus: "0.8"
+    mem_limit: "2250m"
+    mem_reservation: "512m"
 
     logging:
       driver: "json-file"
