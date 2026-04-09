@@ -126,7 +126,7 @@ networks:
           memory: 2G
           cpus: "1.0"
         reservations:
-          memory: 256M
+          memory: 512M
           cpus: "0.25"
 
     logging:
